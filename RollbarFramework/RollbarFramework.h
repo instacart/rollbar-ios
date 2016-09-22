@@ -6,8 +6,6 @@ FOUNDATION_EXPORT double RollbarFrameworkVersionNumber;
 //! Project version string for RollbarFramework.
 FOUNDATION_EXPORT const unsigned char RollbarFrameworkVersionString[];
 
-@import CrashReporter;
-
 #import <RollbarFramework/Rollbar.h>
 #import <RollbarFramework/RollbarNotifier.h>
 #import <RollbarFramework/RollbarConfiguration.h>

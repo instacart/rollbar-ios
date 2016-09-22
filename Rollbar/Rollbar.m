@@ -9,68 +9,24 @@
 #import "Rollbar.h"
 #import "RollbarNotifier.h"
 #import "RollbarLogger.h"
-#import <CrashReporter/CrashReporter.h>
-
 
 @implementation Rollbar
 
 static RollbarNotifier *notifier = nil;
-
-+ (void)enableCrashReporter {
-    NSError *error;
-    
-    PLCrashReporter *crashReporter = [PLCrashReporter sharedReporter];
-    
-    if ([crashReporter hasPendingCrashReport]) {
-        NSData *crashData = [crashReporter loadPendingCrashReportData];
-        PLCrashReport *report = [[PLCrashReport alloc] initWithData:crashData error:&error];
-        
-        if (error) {
-            RollbarLog(@"Could not load crash file: %@", [error localizedDescription]);
-        } else {
-            PLCrashReportTextFormat textFormat = PLCrashReportTextFormatiOS;
-            
-            NSString *crashReportText = [PLCrashReportTextFormatter stringValueForCrashReport:report withTextFormat:textFormat];
-            
-            // Grab the configuration saved to disk before the crash happened
-            RollbarConfiguration *config = [[RollbarConfiguration alloc] initWithLoadedConfiguration];
-            
-            // Create a temporary notifier using the above configuration and report the crash
-            RollbarNotifier *tempNotifier = [[RollbarNotifier alloc] initWithAccessToken:config.accessToken configuration:config isRoot:NO];
-            
-            [tempNotifier logCrashReport:crashReportText];
-        }
-        
-        [crashReporter purgePendingCrashReport];
-    }
-    
-    [crashReporter enableCrashReporterAndReturnError:&error];
-    if (error) {
-        RollbarLog(@"Could not enable crash reporter: %@", [error localizedDescription]);
-    }
-}
 
 + (void)initWithAccessToken:(NSString *)accessToken {
     [self initWithAccessToken:accessToken configuration:nil];
 }
 
 + (void)initWithAccessToken:(NSString *)accessToken configuration:(RollbarConfiguration*)configuration {
-    [self initWithAccessToken:accessToken configuration:configuration enableCrashReporter:YES];
-}
-
-+ (void)initWithAccessToken:(NSString *)accessToken configuration:(RollbarConfiguration*)configuration
-        enableCrashReporter:(BOOL)enable {
     if (notifier) {
         RollbarLog(@"Rollbar has already been initialized.");
     } else {
         notifier = [[RollbarNotifier alloc] initWithAccessToken:accessToken configuration:configuration isRoot:YES];
 
-        if (enable) {
-            [self enableCrashReporter];
-        }
-        
         [notifier.configuration save];
     }
+
 }
 
 + (RollbarConfiguration*)currentConfiguration {

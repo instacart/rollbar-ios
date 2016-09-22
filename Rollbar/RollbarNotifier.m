@@ -89,14 +89,8 @@ static BOOL isNetworkReachable = YES;
     return self;
 }
 
-- (void)logCrashReport:(NSString*)crashReport {
-    NSDictionary *payload = [self buildPayloadWithLevel:self.configuration.crashLevel message:nil exception:nil extra:nil crashReport:crashReport];
-    
-    [self queuePayload:payload];
-}
-
 - (void)log:(NSString*)level message:(NSString*)message exception:(NSException*)exception data:(NSDictionary*)data {
-    NSDictionary *payload = [self buildPayloadWithLevel:level message:message exception:exception extra:data crashReport:nil];
+    NSDictionary *payload = [self buildPayloadWithLevel:level message:message exception:exception extra:data];
     
     [self queuePayload:payload];
 }
@@ -230,7 +224,7 @@ static BOOL isNetworkReachable = YES;
     return data;
 }
 
-- (NSDictionary*)buildPayloadWithLevel:(NSString*)level message:(NSString*)message exception:(NSException*)exception extra:(NSDictionary*)extra crashReport:(NSString*)crashReport {
+- (NSDictionary*)buildPayloadWithLevel:(NSString*)level message:(NSString*)message exception:(NSException*)exception extra:(NSDictionary*)extra {
     
     NSDictionary *clientData = [self buildClientData];
     NSDictionary *notifierData = @{@"name": @"rollbar-ios",
@@ -238,7 +232,7 @@ static BOOL isNetworkReachable = YES;
     
     NSDictionary *customData = self.configuration.customData;
     
-    NSDictionary *body = [self buildPayloadBodyWithMessage:message exception:exception extra:extra crashReport:crashReport];
+    NSDictionary *body = [self buildPayloadBodyWithMessage:message exception:exception extra:extra];
     
     NSMutableDictionary *data = [@{@"environment": self.configuration.environment,
                                    @"level": level,
@@ -261,10 +255,6 @@ static BOOL isNetworkReachable = YES;
              @"data": data};
 }
 
-- (NSDictionary*)buildPayloadBodyWithCrashReport:(NSString*)crashReport {
-    return @{@"crash_report": @{@"raw": crashReport}};
-}
-
 - (NSDictionary*)buildPayloadBodyWithMessage:(NSString*)message extra:(NSDictionary*)extra {
     NSMutableDictionary *result = [NSMutableDictionary dictionary];
     result[@"body"] = message ? message : @"";
@@ -276,12 +266,8 @@ static BOOL isNetworkReachable = YES;
     return @{@"message": result};
 }
 
-- (NSDictionary*)buildPayloadBodyWithMessage:(NSString*)message exception:(NSException*)exception extra:(NSDictionary*)extra crashReport:(NSString*)crashReport {
-    if (crashReport) {
-        return [self buildPayloadBodyWithCrashReport:crashReport];
-    } else {
-        return [self buildPayloadBodyWithMessage:message extra:extra];
-    }
+- (NSDictionary*)buildPayloadBodyWithMessage:(NSString*)message exception:(NSException*)exception extra:(NSDictionary*)extra {
+    return [self buildPayloadBodyWithMessage:message extra:extra];
 }
 
 - (void)queuePayload:(NSDictionary*)payload {
