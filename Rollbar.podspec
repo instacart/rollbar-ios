@@ -119,8 +119,6 @@ Pod::Spec.new do |s|
                  "UIKit",
                  "Foundation"
 
-  s.vendored_frameworks = "Vendor/CrashReporter.framework"
-
   # s.library   = "iconv"
   # s.libraries = "iconv", "xml2"
 
