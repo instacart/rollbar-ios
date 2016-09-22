@@ -15,10 +15,8 @@
 
 @interface Rollbar : NSObject
 
-+ (void)initWithAccessToken:(NSString*)accessToken configuration:(RollbarConfiguration*)configuration
-        enableCrashReporter:(BOOL)enable;
-+ (void)initWithAccessToken:(NSString*)accessToken;
 + (void)initWithAccessToken:(NSString*)accessToken configuration:(RollbarConfiguration*)configuration;
++ (void)initWithAccessToken:(NSString*)accessToken;
 
 + (RollbarConfiguration*)currentConfiguration;
 + (RollbarNotifier*)currentNotifier;
@@ -83,8 +81,6 @@
 + (void)critical:(NSString*)message exception:(NSException*)exception;
 + (void)critical:(NSString*)message exception:(NSException*)exception data:(NSDictionary*)data;
 + (void)critical:(NSString*)message exception:(NSException*)exception data:(NSDictionary*)data context:(NSString*)context;
-
-+ (void)logCrashReport:(NSString*)crashReport;
 
 // Telemetry logging
 

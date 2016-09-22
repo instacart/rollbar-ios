@@ -14,7 +14,6 @@
 #import <UIKit/UIKit.h>
 #include <sys/utsname.h>
 #import "NSJSONSerialization+Rollbar.h"
-#import "KSCrash.h"
 #import "RollbarTelemetry.h"
 
 #define MAX_PAYLOAD_SIZE 128 // The maximum payload size in kb
@@ -92,15 +91,9 @@ static BOOL isNetworkReachable = YES;
     return self;
 }
 
-- (void)logCrashReport:(NSString*)crashReport {
-    NSDictionary *payload = [self buildPayloadWithLevel:self.configuration.crashLevel message:nil exception:nil extra:nil crashReport:crashReport context:nil];
-    if (payload) {
-        [self queuePayload:payload];
-    }
-}
 
 - (void)log:(NSString*)level message:(NSString*)message exception:(NSException*)exception data:(NSDictionary*)data context:(NSString*) context {
-    NSDictionary *payload = [self buildPayloadWithLevel:level message:message exception:exception extra:data crashReport:nil context:context];
+    NSDictionary *payload = [self buildPayloadWithLevel:level message:message exception:exception extra:data context:context];
     if (payload) {
         [self queuePayload:payload];
     }
@@ -292,15 +285,14 @@ static BOOL isNetworkReachable = YES;
     }
 }
 
-- (NSDictionary*)buildPayloadWithLevel:(NSString*)level message:(NSString*)message exception:(NSException*)exception extra:(NSDictionary*)extra crashReport:(NSString*)crashReport context:(NSString*)context {
-    
+- (NSDictionary*)buildPayloadWithLevel:(NSString*)level message:(NSString*)message exception:(NSException*)exception extra:(NSDictionary*)extra context:(NSString*)context {
     NSDictionary *clientData = [self buildClientData];
     NSDictionary *notifierData = @{@"name": self.configuration.notifierName,
                                    @"version": self.configuration.notifierVersion};
     
     NSDictionary *customData = self.configuration.customData;
     
-    NSDictionary *body = [self buildPayloadBodyWithMessage:message exception:exception extra:extra crashReport:crashReport];
+    NSDictionary *body = [self buildPayloadBodyWithMessage:message exception:exception extra:extra];
     
     NSMutableDictionary *data = [@{@"environment": self.configuration.environment,
                                    @"level": level,
@@ -338,10 +330,6 @@ static BOOL isNetworkReachable = YES;
 
     return @{@"access_token": self.configuration.accessToken,
              @"data": data};
-}
-
-- (NSDictionary*)buildPayloadBodyWithCrashReport:(NSString*)crashReport {
-    return @{@"crash_report": @{@"raw": crashReport}};
 }
 
 - (NSDictionary*)buildPayloadBodyWithMessage:(NSString*)message extra:(NSDictionary*)extra {
@@ -394,11 +382,9 @@ static BOOL isNetworkReachable = YES;
     return buf ? buf : @"Unknown";
 }
 
-- (NSDictionary*)buildPayloadBodyWithMessage:(NSString*)message exception:(NSException*)exception extra:(NSDictionary*)extra crashReport:(NSString*)crashReport {
+- (NSDictionary*)buildPayloadBodyWithMessage:(NSString*)message exception:(NSException*)exception extra:(NSDictionary*)extra {
     NSDictionary *payloadBody;
-    if (crashReport) {
-        payloadBody = [self buildPayloadBodyWithCrashReport:crashReport];
-    } else if (exception && message && message.length > 0) {
+    if (exception && message && message.length > 0) {
         payloadBody = [self buildPayloadBodyWithException:exception message:message];
     } else if (exception) {
         payloadBody = [self buildPayloadBodyWithException:exception];

@@ -8,46 +8,23 @@
 
 #import "Rollbar.h"
 #import "RollbarLogger.h"
-#import "RollbarKSCrashInstallation.h"
 
 @implementation Rollbar
 
 static RollbarNotifier *notifier = nil;
-
-+ (void)enableCrashReporter {
-    RollbarKSCrashInstallation *installation = [RollbarKSCrashInstallation sharedInstance];
-    [installation install];
-    [installation sendAllReportsWithCompletion:^(NSArray *filteredReports, BOOL completed, NSError *error) {
-        if (error) {
-            RollbarLog(@"Could not enable crash reporter: %@", [error localizedDescription]);
-        } else if (completed) {
-            [notifier processSavedItems];
-        }
-    }];
-}
 
 + (void)initWithAccessToken:(NSString *)accessToken {
     [Rollbar initWithAccessToken:accessToken configuration:nil];
 }
 
 + (void)initWithAccessToken:(NSString *)accessToken configuration:(RollbarConfiguration*)configuration {
-    [Rollbar initWithAccessToken:accessToken configuration:configuration enableCrashReporter:YES];
-}
-
-+ (void)initWithAccessToken:(NSString *)accessToken configuration:(RollbarConfiguration*)configuration
-        enableCrashReporter:(BOOL)enable {
-    [RollbarTelemetry sharedInstance]; // Load saved data, if any
     if (notifier) {
         RollbarLog(@"Rollbar has already been initialized.");
     } else {
         notifier = [[RollbarNotifier alloc] initWithAccessToken:accessToken configuration:configuration isRoot:YES];
-
-        if (enable) {
-            [Rollbar enableCrashReporter];
-        }
-        
         [notifier.configuration save];
     }
+
 }
 
 + (RollbarConfiguration*)currentConfiguration {
@@ -264,12 +241,6 @@ static RollbarNotifier *notifier = nil;
 
 + (void)criticalWithData:(NSDictionary*)data {
     [notifier log:@"critical" message:nil exception:nil data:data context:nil];
-}
-
-// Crash Report
-
-+ (void)logCrashReport:(NSString*)crashReport {
-    [notifier logCrashReport:crashReport];
 }
 
 #pragma mark - Telemetry logging methods

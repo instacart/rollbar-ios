@@ -60,8 +60,6 @@ static NSString *configurationFilePath = nil;
         #else
         self.environment = @"unspecified";
         #endif
-
-        self.crashLevel = @"error";
         self.scrubFields = [NSMutableSet new];
 
         self.notifierName = NOTIFIER_NAME;

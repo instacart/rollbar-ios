@@ -47,7 +47,6 @@ typedef NS_ENUM(NSUInteger, CaptureIpType) {
 @property (atomic, copy) NSString *accessToken;
 @property (atomic, copy) NSString *environment;
 @property (atomic, copy) NSString *endpoint;
-@property (atomic, copy) NSString *crashLevel;
 @property (readonly, atomic, copy) NSString *personId;
 @property (readonly, atomic, copy) NSString *personUsername;
 @property (readonly, atomic, copy) NSString *personEmail;
