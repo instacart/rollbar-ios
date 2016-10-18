@@ -7,17 +7,14 @@ FOUNDATION_EXPORT double RollbarFrameworkVersionNumber;
 FOUNDATION_EXPORT const unsigned char RollbarFrameworkVersionString[];
 
 #import <KSCrash/KSCrash.h>
-
-#import <RollbarFramework/Rollbar.h>
-#import <RollbarFramework/RollbarNotifier.h>
-#import <RollbarFramework/RollbarConfiguration.h>
-#import <RollbarFramework/RollbarThread.h>
-#import <RollbarFramework/RollbarFileReader.h>
-#import <RollbarFramework/RollbarReachability.h>
-#import <RollbarFramework/RollbarLogger.h>
-#import <RollbarFramework/RollbarLevel.h>
-#import <RollbarFramework/RollbarKSCrashInstallation.h>
-#import <RollbarFramework/RollbarKSCrashReportSink.h>
-#import <RollbarFramework/NSJSONSerialization+Rollbar.h>
-#import <RollbarFramework/RollbarTelemetry.h>
-#import <RollbarFramework/RollbarTelemetryType.h>
+#import <Rollbar/Rollbar.h>
+#import <Rollbar/RollbarNotifier.h>
+#import <Rollbar/RollbarConfiguration.h>
+#import <Rollbar/RollbarThread.h>
+#import <Rollbar/RollbarFileReader.h>
+#import <Rollbar/RollbarReachability.h>
+#import <Rollbar/RollbarLogger.h>
+#import <Rollbar/RollbarLevel.h>
+#import <Rollbar/NSJSONSerialization+Rollbar.h>
+#import <Rollbar/RollbarTelemetry.h>
+#import <Rollbar/RollbarTelemetryType.h>
