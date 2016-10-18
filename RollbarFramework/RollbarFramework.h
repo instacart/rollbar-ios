@@ -6,6 +6,7 @@ FOUNDATION_EXPORT double RollbarFrameworkVersionNumber;
 //! Project version string for RollbarFramework.
 FOUNDATION_EXPORT const unsigned char RollbarFrameworkVersionString[];
 
+<<<<<<< HEAD
 #import <RollbarFramework/Rollbar.h>
 #import <RollbarFramework/RollbarNotifier.h>
 #import <RollbarFramework/RollbarConfiguration.h>
@@ -17,3 +18,12 @@ FOUNDATION_EXPORT const unsigned char RollbarFrameworkVersionString[];
 #import <RollbarFramework/NSJSONSerialization+Rollbar.h>
 #import <RollbarFramework/RollbarTelemetry.h>
 #import <RollbarFramework/RollbarTelemetryType.h>
+=======
+#import <Rollbar/Rollbar.h>
+#import <Rollbar/RollbarNotifier.h>
+#import <Rollbar/RollbarConfiguration.h>
+#import <Rollbar/RollbarThread.h>
+#import <Rollbar/RollbarFileReader.h>
+#import <Rollbar/RollbarReachability.h>
+#import <Rollbar/RollbarLogger.h>
+>>>>>>> Fix umbrella header errors for Carthage support
