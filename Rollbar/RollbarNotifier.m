@@ -90,7 +90,7 @@ static BOOL isNetworkReachable = YES;
 }
 
 - (void)log:(NSString*)level message:(NSString*)message exception:(NSException*)exception data:(NSDictionary*)data context:(NSString*) context {
-    NSDictionary *payload = [self buildPayloadWithLevel:level message:message exception:exception extra:data crashReport:nil context:context];
+    NSDictionary *payload = [self buildPayloadWithLevel:level message:message exception:exception extra:data context:context];
     
     [self queuePayload:payload];
 }
