@@ -122,6 +122,11 @@ static NSString *configurationFilePath = nil;
     [self save];
 }
 
+- (void)setCodeVersion:(NSString *)codeVersion {
+    _codeVersion = codeVersion;
+    [self save];
+}
+
 - (void)setCodeFramework:(NSString *)framework {
     self.framework = framework ? framework : FRAMEWORK;
     [self save];
