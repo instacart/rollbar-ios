@@ -8,7 +8,6 @@
 #import <UIKit/UIKit.h>
 #include <sys/utsname.h>
 #import "NSJSONSerialization+Rollbar.h"
-#import "KSCrash.h"
 #import "RollbarTelemetry.h"
 #import "RollbarPayloadTruncator.h"
 
@@ -100,18 +99,6 @@ static BOOL isNetworkReachable = YES;
     return self;
 }
 
-- (void)logCrashReport:(NSString*)crashReport {
-    NSDictionary *payload = [self buildPayloadWithLevel:self.configuration.crashLevel
-                                                message:nil
-                                              exception:nil
-                                                  extra:nil
-                                            crashReport:crashReport
-                                                context:nil];
-    if (payload) {
-        [self queuePayload:payload];
-    }
-}
-
 - (void)log:(NSString*)level
     message:(NSString*)message
   exception:(NSException*)exception
@@ -131,7 +118,6 @@ static BOOL isNetworkReachable = YES;
                                                 message:message
                                               exception:exception
                                                   extra:data
-                                            crashReport:nil
                                                 context:context
                              ];
     if (payload) {
@@ -326,7 +312,6 @@ static BOOL isNetworkReachable = YES;
                                message:(NSString*)message
                              exception:(NSException*)exception
                                  extra:(NSDictionary*)extra
-                           crashReport:(NSString*)crashReport
                                context:(NSString*)context {
     
     NSDictionary *clientData = [self buildClientData];
@@ -335,7 +320,7 @@ static BOOL isNetworkReachable = YES;
     
     NSMutableDictionary *customData =
         [NSMutableDictionary dictionaryWithDictionary:self.configuration.customData];
-    if (crashReport || exception) {
+    if (exception) {
         // neither crash report no exception payload objects have placeholders for any extra data
         // or an extra message, let's preserve them as the custom data:
         if (extra) {
@@ -349,7 +334,6 @@ static BOOL isNetworkReachable = YES;
     NSDictionary *body = [self buildPayloadBodyWithMessage:message
                                                  exception:exception
                                                      extra:extra
-                                               crashReport:crashReport
                           ];
     
     NSMutableDictionary *data = [@{@"environment": self.configuration.environment,
@@ -388,10 +372,6 @@ static BOOL isNetworkReachable = YES;
 
     return @{@"access_token": self.configuration.accessToken,
              @"data": data};
-}
-
-- (NSDictionary*)buildPayloadBodyWithCrashReport:(NSString*)crashReport {
-    return @{@"crash_report": @{@"raw": crashReport}};
 }
 
 - (NSDictionary*)buildPayloadBodyWithMessage:(NSString*)message
@@ -445,12 +425,9 @@ static BOOL isNetworkReachable = YES;
 
 - (NSDictionary*)buildPayloadBodyWithMessage:(NSString*)message
                                    exception:(NSException*)exception
-                                       extra:(NSDictionary*)extra
-                                 crashReport:(NSString*)crashReport {
+                                       extra:(NSDictionary*)extra {
     NSDictionary *payloadBody;
-    if (crashReport) {
-        payloadBody = [self buildPayloadBodyWithCrashReport:crashReport];
-    } else if (exception) {
+    if (exception) {
         payloadBody = [self buildPayloadBodyWithException:exception];
     } else {
         payloadBody = [self buildPayloadBodyWithMessage:message extra:extra];

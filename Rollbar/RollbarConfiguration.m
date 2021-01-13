@@ -46,7 +46,6 @@ static NSString *configurationFilePath = nil;
         _environment = @"unspecified";
         #endif
 
-        _crashLevel = @"error";
         _scrubFields = [NSMutableSet new];
         _scrubWhitelistFields = [NSMutableSet new];
         self.telemetryViewInputsToScrub = [NSMutableSet new];

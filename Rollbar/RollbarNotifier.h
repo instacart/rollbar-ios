@@ -11,7 +11,6 @@
 
 - (void)processSavedItems;
 
-- (void)logCrashReport:(NSString*)crashReport;
 - (void)log:(NSString*)level
     message:(NSString*)message
   exception:(NSException*)exception
